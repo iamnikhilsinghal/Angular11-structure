@@ -8,8 +8,6 @@ export class UserListService {
   constructor(private http: HttpClient) {}
 
   getUserInfo(): Observable<any> {
-    console.log('here');
-
     return this.http.get(`${API_URL}/user/info`);
   }
 }

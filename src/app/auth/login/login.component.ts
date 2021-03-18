@@ -19,7 +19,6 @@ export class LoginComponent implements OnInit {
         password: 'password',
       })
       .subscribe((resp) => {
-        console.log('resp', resp);
         if (resp.token) {
           localStorage.setItem('token', resp.token);
           this.router.navigate(['dashboard']);

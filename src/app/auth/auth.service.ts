@@ -1,12 +1,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { API_URL } from '../Config';
+
+export interface User {
+  firstName: string;
+  lastName: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor(private router: Router, private http: HttpClient) {}
+  userUpdated = new BehaviorSubject<User>({ firstName: '', lastName: '' });
+
+  constructor(private router: Router, private http: HttpClient) {
+    let user: any = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (user) {
+      this.userUpdated.next(user);
+    } else {
+      this.userUpdated.next({ firstName: 'DemoFirst', lastName: 'DemoLast' });
+    }
+  }
 
   login({ email = '', password = '' }): Observable<any> {
     return this.http.post(`${API_URL}/auth/login`, {
@@ -17,6 +32,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('token');
+    this.userUpdated.next({ firstName: '', lastName: '' });
     this.router.navigate(['auth', 'login']);
   }
 }
